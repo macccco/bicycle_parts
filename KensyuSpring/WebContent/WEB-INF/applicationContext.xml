@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        ">
+
+    <!-- @Controllerなどのアノテーションを有効にするためのおまじない -->
+    <mvc:annotation-driven />
+
+    <!-- @Autowiredステレオタイプアノテーションを有効にするためのおまじない -->
+    <!-- enable autowire -->
+    <context:annotation-config />
+    <!-- コンポーネントスキャンのおまじない -->
+    <context:component-scan base-package="spring.app.bicycle"/>
+    <context:component-scan base-package="dao"/>
+    <context:component-scan base-package="dto"/>
+    
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
+		<property name="username" value="postgres" />
+		<property name="password" value="pass" />
+	</bean>
+
+	<bean class="org.springframework.jdbc.core.JdbcTemplate">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+<!--	<bean id="multipartResolver"-->
+<!--		class="org.springframework.web.multipart.support.StandardServletMultipartResolver">-->
+<!--	</bean>-->
+	
+    <mvc:resources mapping="/css/**" location="/WEB-INF/css/" />
+    <mvc:resources mapping="/upload/**" location="/WEB-INF/upload/" />
+
+    
+
+    
+
+</beans>
