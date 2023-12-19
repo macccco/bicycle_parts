@@ -16,5 +16,5 @@ public class BicycleConstant {
 	public static final List<String> TYPES = Collections.unmodifiableList( new ArrayList<String>(Arrays.asList(
 			"ロード", "グラベル", "クロス", "マウンテン")) );
 	
-	public static final String UPLOAD_PATH = "#";
+	public static final String UPLOAD_PATH = "#";	//仮
 }
