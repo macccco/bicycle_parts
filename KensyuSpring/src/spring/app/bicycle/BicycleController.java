@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import cnst.BicycleConstant;
 import dto.BicyclePartsDto;
 
 
@@ -68,12 +69,12 @@ public class BicycleController {
 		//リストに入力した値を格納
 		for(Field field : searchForm.getClass().getDeclaredFields()) {		//searchFormの全てのフィールドにアクセス
 			try {
-				field.setAccessible(true);															//自分の親クラス以外のprivateなフィールドにアクセスする場合は必要
-				String name = field.getName();													//searchFormのフィールドの変数名を取得
-				if(name.equals("like") || name.equals("AorO")) {					//「全一致/あいまい」と「AND/OR」は個別で取得したいのでリストに加えない
+				field.setAccessible(true);									//自分の親クラス以外のprivateなフィールドにアクセスする場合は必要
+				String name = field.getName();								//searchFormのフィールドの変数名を取得
+				if(name.equals("like") || name.equals("AorO")) {			//「全一致/あいまい」と「AND/OR」は個別で取得したいのでリストに加えない
 					continue;
 				}
-				columns.add(field.get(searchForm).toString());						//それ以外のフィールドの値はリストに加える
+				columns.add(field.get(searchForm).toString());				//それ以外のフィールドの値はリストに加える
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -143,7 +144,7 @@ public class BicycleController {
 			//画像のファイル名を保存
 			columns.add(filename);
 			//保存する場所の絶対パス + ファイル名
-			Path path = Paths.get("C:\\java_2022\\pleiades\\workspace\\KensyuSpring\\WebContent\\upload\\bicycle_image/" + filename);
+			Path path = Paths.get(BicycleConstant.UPLOAD_PATH + filename);
 			//書き込み
 			try {
 	        	Files.copy(mfile.getInputStream(), path);
@@ -210,7 +211,7 @@ public class BicycleController {
 			//もし画像が存在したら、、、
 			if(!lastFileName.equals("")) {
 				//画像を削除
-				Path p = Paths.get("C:\\java_2022\\pleiades\\workspace\\KensyuSpring\\WebContent\\upload\\bicycle_image\\" + lastFileName);
+				Path p = Paths.get(BicycleConstant.UPLOAD_PATH + lastFileName);
 				//元画像の削除実行
 				Files.deleteIfExists(p);
 				}
@@ -226,7 +227,7 @@ public class BicycleController {
 			//画像のファイル名を保存
 			map.put("pict", filename);
 			//保存する場所の絶対パス + ファイル名
-			Path path = Paths.get("C:\\java_2022\\pleiades\\workspace\\KensyuSpring\\WebContent\\upload\\bicycle_image/" + filename);
+			Path path = Paths.get(BicycleConstant.UPLOAD_PATH + filename);
 			//書き込み
 			try {
 	        	Files.copy(mfile.getInputStream(), path);
@@ -263,7 +264,7 @@ public class BicycleController {
 			//もし画像が存在したら、、、
 			if(!fileName.equals("")) {
 				//画像を削除
-				Path p = Paths.get("C:\\java_2022\\pleiades\\workspace\\KensyuSpring\\WebContent\\upload\\bicycle_image\\" + fileName);
+				Path p = Paths.get(BicycleConstant.UPLOAD_PATH + fileName);
 				//元画像の削除実行
 				Files.deleteIfExists(p);
 			}

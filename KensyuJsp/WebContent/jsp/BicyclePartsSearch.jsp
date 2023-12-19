@@ -68,6 +68,47 @@
 		return false;
 	}
 
+	//CSV出力メソッド
+    function handleDownload() {
+        var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);//文字コードをBOM付きUTF-8に指定
+        var table = document.getElementById("searchTable");//id="searchTable"という要素を取得
+        var data_csv = "";//ここに文字データとして値を格納していく
+
+        for(var i = 0;  i < table.rows.length; i++){
+          for(var j = 1; j < table.rows[i].cells.length; j++){
+              if(i >= 1 && j == 2){
+	            data_csv += table.rows[i].cells[j].children[1].value;//HTML中の表のセル値をdata_csvに格納
+	          } else if(i >= 1 && j == 7) {
+	        	  data_csv += table.rows[i].cells[j].innerText.replaceAll("\\", "").replaceAll("," , "");//HTML中の表のセル値をdata_csvに格納
+              } else {
+	            data_csv += table.rows[i].cells[j].innerText.replaceAll("\n", " ").replaceAll("," , "");//HTML中の表のセル値をdata_csvに格納
+              }
+            if(j == table.rows[i].cells.length-1) data_csv += "\n";//行終わりに改行コードを追加
+            else data_csv += ",";//セル値の区切り文字として,を追加
+          }
+        }
+
+        var blob = new Blob([ bom, data_csv], { "type" : "text/csv" });//data_csvのデータをcsvとしてダウンロードする関数
+        if (window.navigator.msSaveBlob) { //IEの場合の処理
+            window.navigator.msSaveBlob(blob, "test.csv"); 
+            //window.navigator.msSaveOrOpenBlob(blob, "test.csv");// msSaveOrOpenBlobの場合はファイルを保存せずに開ける
+        } else {
+            document.getElementById("download").href = window.URL.createObjectURL(blob);
+        }
+
+        delete data_csv;//data_csvオブジェクトはもういらないので消去してメモリを開放
+    }
+
+
+    function csvImportCheck(form) {
+        var element = document.getElementById("csvImportFile");
+	   	if(element.value != "") {
+			form.submit();
+       } else {
+		alert("ファイルが選択されていません");
+       }
+    }
+
 	
 </script>
 
@@ -83,7 +124,7 @@
 	<body>
 		<div class="flex">
 			<div class="search">
-				<form action="bicyclePartsAction" name="search_form" class="search_form" method="post">
+				<form action="BicyclePartsSelect" name="search_form" class="search_form" method="post">
 					<table>
 						<thead>
 							<tr>
@@ -181,8 +222,15 @@
 
 
 		<div class="list">
+			<div class="btn csv">
+				<form action="CsvImport" name="csvImportForm" method="post" enctype="multipart/form-data">
+					<input type="file" name="csvFile" id="csvImportFile" accept=".csv">
+					<input type="button" value="CSV入力" id="button" onclick="csvImportCheck(this.form)" >
+				</form>
+				<a href="#" class="a_btn" id="download" onclick="handleDownload()">CSV出力</a>
+			</div>
 			<form action="#" name="list_form" method="post">
-				<table>
+				<table id="searchTable">
 					<thead>
 						<tr>
 							<th>選択</th>
@@ -215,7 +263,7 @@
 					      <td>${ dbdataLine.partsMaker }</td>
 					      <td>${ dbdataLine.category }</td>
 					      <td>${ dbdataLine.type }</td>
-					      <td><fmt:formatNumber value="${ dbdataLine.price }" currencyCode="JPY" type="CURRENCY" groupingUsed="true" maxFractionDigits="0" /></td>
+					      <td>\<fmt:formatNumber value="${ dbdataLine.price }" maxFractionDigits="0" /></td>
 					      <td>
 						      	<c:forEach var="str" items="${ fn:split(dbdataLine.dateCreate,' ') }" >
 									${str}<br>

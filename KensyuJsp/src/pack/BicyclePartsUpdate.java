@@ -66,7 +66,7 @@ public class BicyclePartsUpdate extends HttpServlet {
 						e.printStackTrace();
 					}
 			//新しい画像の絶対パスを作成
-			String path = Constant.UPLOAD_PATH +nextFileName;
+			String path = Constant.UPLOAD_PATH + nextFileName;
 			//書き込み
 			part.write(path);
 		}
