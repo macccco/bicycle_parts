@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import cnst.BicycleConstant;
 import dto.BicyclePartsDto;
@@ -31,9 +32,13 @@ public class BicycleController {
 	
 	
 	//全件表示
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/dspSearch", method = RequestMethod.GET)
 	public String dspBicyclePartsSearch(Model model) {
-		
+		// 画面表示
+        Object msg = model.getAttribute("msg");
+        if (msg != null) {
+            model.addAttribute("msg", String.valueOf(msg));
+        }
 		//Beanインスタンスを格納するリスト
 		List<BicyclePartsDto> list = new ArrayList<>();
 		
@@ -125,7 +130,7 @@ public class BicycleController {
 	
 	//登録実行
 	@RequestMapping(value = "/bicycleInsertRegisterAction", method = RequestMethod.POST)
-	public String registerInsert(Model model, @ModelAttribute("bicycleInsertForm")BicycleInsertForm insertForm) {
+	public String registerInsert(Model model, @ModelAttribute("bicycleInsertForm")BicycleInsertForm insertForm, RedirectAttributes redirectAttributes) {
 		
 		//formに入力した値を格納するリスト
 		List<String> columns = new ArrayList<>();
@@ -147,7 +152,8 @@ public class BicycleController {
 			Path path = Paths.get(BicycleConstant.UPLOAD_PATH + filename);
 			//書き込み
 			try {
-	        	Files.copy(mfile.getInputStream(), path);
+	        	long ret = Files.copy(mfile.getInputStream(), path);
+	        	System.out.println(ret);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
@@ -158,6 +164,7 @@ public class BicycleController {
 			int ret = bicycleService.insert(columns);
 			if(ret > 0) {
 				model.addAttribute("msg", "ID: " + insertForm.getPartsId() + " を登録しました");
+//				redirectAttributes.addFlashAttribute("msg", "ID: " + insertForm.getPartsId() + " を登録しました");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,6 +174,7 @@ public class BicycleController {
 		
 		//遷移先画面へ
 		return dspBicyclePartsSearch(model);
+		
 		
 	}
 	
