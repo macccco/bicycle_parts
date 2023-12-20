@@ -152,8 +152,7 @@ public class BicycleController {
 			Path path = Paths.get(BicycleConstant.UPLOAD_PATH + filename);
 			//書き込み
 			try {
-	        	long ret = Files.copy(mfile.getInputStream(), path);
-	        	System.out.println(ret);
+	        	Files.copy(mfile.getInputStream(), path);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
