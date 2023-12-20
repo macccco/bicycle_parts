@@ -1,4 +1,4 @@
-package cnst;
+package src.cnst;
 
 public class Constant {
 
