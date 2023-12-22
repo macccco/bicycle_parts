@@ -50,7 +50,9 @@ public class BicycleService {
 	}
 	
 	public int delete(String partsId) throws Exception {
-		return bicyclePartsDao.delete(partsId);
+		int ret = bicyclePartsDao.delete(partsId);
+		bicyclePartsDao.serialNumbering();
+		return ret;
 	}
 	
 	public List<BicyclePartsDto> csvImport(MultipartFile uploadFile) throws IOException{

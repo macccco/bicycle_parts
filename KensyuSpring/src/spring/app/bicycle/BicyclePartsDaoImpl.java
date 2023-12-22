@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -216,6 +217,17 @@ public class BicyclePartsDaoImpl implements BicyclePartsDao{
 		int ret = jdbcTemplate.update(sql, Integer.parseInt(partsId));
 		
 		return ret;
+	}
+	
+	
+	//削除後のparts_idを採番しなおす
+	public void serialNumbering() throws DataAccessException{
+		String sql = "UPDATE bicycle_parts AS t1"
+				+ " SET parts_id = Rn"
+				+ " FROM (SELECT parts_id, ROW_NUMBER() OVER (ORDER BY parts_id) AS Rn"
+				+ "        FROM bicycle_parts) AS t2"
+				+ " WHERE t1.parts_id = t2.parts_id";
+		jdbcTemplate.update(sql);
 	}
 	
 	

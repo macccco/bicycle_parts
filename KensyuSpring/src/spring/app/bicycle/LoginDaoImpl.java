@@ -22,19 +22,30 @@ public class LoginDaoImpl implements LoginDao{
 	@Override
 	public LoginDto loginSelect(String userName) {
 		String sql = "SELECT * FROM m_user WHERE user_name = ?";
-		LoginDto dto = jdbcTemplate.queryForObject(
-				sql,
-				new RowMapper<LoginDto>() {
-					public LoginDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-						LoginDto dto = new LoginDto(
-								rs.getString("user_name"),
-								rs.getString("user_pass")
-								);
-						return dto;
-					}
-				},
-				userName
-		);
+		LoginDto dto = null;
+		try {
+			dto = jdbcTemplate.queryForObject(
+					sql,
+					new RowMapper<LoginDto>() {
+						public LoginDto mapRow(ResultSet rs, int rowNum) {
+							LoginDto dto = null;
+							try {
+								dto = new LoginDto(
+										rs.getString("user_name"),
+										rs.getString("user_pass")
+										);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+							return dto;
+						}
+					},
+					userName
+					);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 		return dto;
 	}
 }

@@ -3,6 +3,8 @@ package dao;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
+
 import dto.BicyclePartsDto;
 
 public interface BicyclePartsDao {
@@ -21,4 +23,6 @@ public interface BicyclePartsDao {
 	public int update(String partsId, Map<String, String> map) throws Exception;
 	
 	public int delete(String partsId) throws Exception;
+	
+	public void serialNumbering() throws DataAccessException;
 }
